@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '@/lib/auth-context'
 import { login as loginApi, ApiError } from '@/lib/api'
-import { enableDemoMode, DEMO_USER } from '@/lib/mock-data'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -13,7 +12,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
@@ -27,12 +25,6 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const { login } = useAuth()
   const router = useRouter()
-
-  const handleDemoLogin = () => {
-    enableDemoMode()
-    login('demo-token', DEMO_USER)
-    router.push('/projects')
-  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -70,7 +62,7 @@ export default function LoginPage() {
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
-          <CardContent className="flex flex-col gap-4">
+          <CardContent className="flex flex-col gap-3">
             {error && (
               <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
                 {error}
@@ -100,29 +92,17 @@ export default function LoginPage() {
                 autoComplete="current-password"
               />
             </div>
-          </CardContent>
-          <CardFooter className="flex flex-col gap-4">
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading && <Spinner />}
-              Sign in
+              {isLoading ? (
+                <>
+                  <Spinner className="mr-2 size-4" />
+                  Signing in…
+                </>
+              ) : (
+                'Sign in'
+              )}
             </Button>
-            <div className="relative w-full">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">Or</span>
-              </div>
-            </div>
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full"
-              onClick={handleDemoLogin}
-            >
-              Try Demo Account
-            </Button>
-            <p className="text-center text-sm text-muted-foreground">
+            <p className="pt-1 text-center text-sm text-muted-foreground">
               Don&apos;t have an account?{' '}
               <Link
                 href="/signup"
@@ -131,7 +111,7 @@ export default function LoginPage() {
                 Sign up
               </Link>
             </p>
-          </CardFooter>
+          </CardContent>
         </form>
       </Card>
     </div>

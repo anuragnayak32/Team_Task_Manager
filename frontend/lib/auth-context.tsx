@@ -11,7 +11,6 @@ import {
 import { useRouter } from 'next/navigation'
 import type { User } from './types'
 import { getMe } from './api'
-import { disableDemoMode } from './mock-data'
 
 interface AuthContextType {
   user: User | null
@@ -52,7 +51,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = useCallback(() => {
     localStorage.removeItem('token')
-    disableDemoMode()
+    localStorage.removeItem('demo_mode')
     setUser(null)
     router.push('/login')
   }, [router])
